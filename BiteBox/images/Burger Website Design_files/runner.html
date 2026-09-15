@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!-- saved from url=(0081)https://cdn.platform.openai.com/deployments/dil/v11/runner.html#dil-diagnostics=1 -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; script-src &#39;sha256-l+GqaZa2EVu2ixGiTdM6r+cWhuQVLuoAk1l9Voxdvps=&#39; &#39;self&#39; https://cdn.platform.openai.com/assets/dil/ &#39;unsafe-eval&#39;; base-uri &#39;none&#39;; form-action &#39;none&#39;; frame-src &#39;none&#39;; object-src &#39;none&#39;; worker-src blob: data:">
+    <script>(() => {
+  if (
+    new URLSearchParams(location.hash.slice(1)).get("dil-diagnostics") !== "1"
+  )
+    return;
+  const documentBootId =
+    typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+  Object.defineProperty(window, "__oaiDilBootstrap", {
+    value: Object.freeze({ documentBootId }),
+  });
+  let sequence = 0;
+  const now = performance.now.bind(performance);
+  const timeOriginMs = performance.timeOrigin;
+  const record = (operation, phase, details = {}) => {
+    if (sequence >= 64) return;
+    try {
+      parent.postMessage(
+        {
+          __oaiDilFrame: true,
+          kind: "diagnostic",
+          protocolVersion: 11,
+          record: {
+            realm: "bootstrap",
+            sequence: ++sequence,
+            localTimeMs: now(),
+            timeOriginMs,
+            documentBootId,
+            operation,
+            phase,
+            ...details,
+          },
+        },
+        "*",
+      );
+    } catch {}
+  };
+  record("observer_bootstrap", "returned", { hidden: document.hidden });
+  addEventListener("message", (event) => {
+    const message = event.data;
+    if (
+      event.source === parent &&
+      message &&
+      typeof message === "object" &&
+      message.__oaiDilFrame === true &&
+      message.kind === "diagnosticProbe" &&
+      message.protocolVersion === 11 &&
+      typeof message.requestId === "string" &&
+      message.requestId.length <= 128
+    ) {
+      record("frame_probe", "received", { requestId: message.requestId });
+    }
+  });
+  addEventListener(
+    "error",
+    (event) => {
+      const resource = event.target instanceof HTMLScriptElement;
+      record(resource ? "module_load" : "error", "reported_error", {
+        reason: resource ? "script_load_error" : "uncaught_error",
+      });
+    },
+    true,
+  );
+  addEventListener("unhandledrejection", () => {
+    record("error", "reported_error", { reason: "unhandled_rejection" });
+  });
+  document.addEventListener("securitypolicyviolation", (event) => {
+    const directive = event.effectiveDirective;
+    const operation =
+      directive === "script-src" || directive === "script-src-elem"
+        ? "module_load"
+        : directive === "worker-src"
+          ? "worker_create"
+          : "error";
+    record(operation, "reported_error", { reason: "csp_violation" });
+  });
+  addEventListener(
+    "load",
+    (event) => {
+      if (event.target instanceof HTMLScriptElement)
+        record("module_load", "returned");
+    },
+    true,
+  );
+  document.addEventListener("visibilitychange", () => {
+    record("visibility", "received", { hidden: document.hidden });
+  });
+  for (const name of ["pagehide", "pageshow"]) {
+    addEventListener(name, (event) =>
+      record(name, "received", {
+        hidden: document.hidden,
+        persisted: event.persisted,
+      }),
+    );
+  }
+  for (const name of ["freeze", "resume"]) {
+    document.addEventListener(name, () =>
+      record(name, "received", { hidden: document.hidden }),
+    );
+  }
+})();
+</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIL Runner</title>
+    <script type="module" crossorigin="" src="./runner-BIf2sUvq.js.download"></script>
+  </head>
+  <body>
+  <script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a38c1a929c7fc161',t:'MTc4OTAxODg4OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+
+</body></html>

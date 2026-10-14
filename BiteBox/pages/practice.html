@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM-Practice</title>
+</head>
+<body>
+    <h1>DOM Learning</h1>
+    <p id="para" "class="cls">This is a paragraph.</p>
+    <button onclick="changeData()">Change Data</Data></button>
+    <p id="p2" class="cls2"><strong>paragraph 2</strong></p>
+    <p class="cls3">paragraph 3</p>
+    <p class="cls4">paragraph 4</p>
+    <script>
+        // const el1= document.getElementById("para");
+        // console.log(el1);
+        // console.log(el1.innerText);
+
+        // const el2= document.getElementById("p2");
+        // console.log(el2);
+        // console.log(el2.innerHTML);
+        function changeData(){
+            const el1 = document.getElementById("para");
+            console.log(el1);
+            console.log(el1.innerText);
+            el1.innerText = "This is a updated paragraph";
+            el1.style.color = "red";
+            el1.style.backgroundColor = "lightgray";
+        }
+        const allpara = document.getElementsByTagName("p");
+        for(let i=0; i<allpara.length; i++){
+            console.log(allpara[i].innerText);
+        }
+        const headings = document.getElementsByTagName("h1");
+        console.log(headings[0]);
+        const allcls = document.getElementsByClassName("cls");
+        console.log(allcls);
+        const elements = document.querySelector("p");
+        const elements2 = document.querySelector(".cls");
+        const elements3 = document.querySelector("#para");
+        console.log(elements);
+         console.log(elements2);
+
+
+        const allEl1 = document.querySelector("p");
+        const allEl2 = document.querySelector("#para");
+        const allEl3 = document.querySelector(".cls"); 
+        alert("welcome to js");
+        const input = prompt ( "please enter your name ");
+        const choice = prompt(" do you really want to close this application ");
+        if (choice === true ){
+            alert("closing the app ")        }
+            else {
+                alert (" you have clicked on cancel")
+            }
+    </script>
+</body>
+</html>
